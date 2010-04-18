@@ -3,45 +3,41 @@ module Main
 
 import Random
 import IO
+import Data.Word
+import List
+import Data.Int 
 
-fifi :: Int -> Int
-fifi n | even n = 
-  let doubleTran = fromIntegral(n)
-  in floor(doubleTran/2)
-fifi n = 3*n+1
+fifi :: Int64 -> Int64
+fifi n | n < 0 = 1
+fifi n | even n = n `quot` 2
+fifi n | odd n = 3*n+1
 
-produceChain :: Int->[Int]
+produceChain :: Int64 ->[Int64]
 produceChain 1 = []
 produceChain n = 
   let current = fifi(n) 
   in  current : produceChain(current)
 
-produceChainState list 1 = []
-produceChainState list xs
-  |any (== xs) list = []
-produceChainState list x = 
-  let current = fifi(x) 
-  in current : produceChainState list current
+data Result = Result Int Int
+              deriving (Show, Eq, Ord)
 
-data MyTree a 
-              = Leaf a
-                | Branch (MyTree a) a (MyTree a)
-                  
-treeSize (Leaf x)=1
-treeSize (Branch left x right) = treeSize left + treeSize right
-contains x (Leaf leaf) = x==leaf
-contains x (Branch left node right) = 
-  let resLeft = contains x left
-  in resLeft
+chaineWithSize (x:xs) list = chaineWithSize xs newList
+  where chaine = produceChain x
+        tuple = ((length chaine), x)
+        newList = take 5 (reverse (sort (tuple:list)))
+chaineWithSize [] list = list        
+
+
 
 -- process :: (Integral a) => a -> a -> a
-process num last
-   | last >20 = num
-   | isDiv && div > 5000 = last
-   | isDiv = process div (last+1)
-   | otherwise = process (num*2) last
-     where div = floor(toDiv/3)
-           isDiv = (num -1) `rem` 3 == 0 
-           toDiv = fromIntegral (num-1)                        
+process :: Integer -> [(Integer,Integer)] -> [(Integer,Integer)]
+process x list | x < 2 = list
+process num list
+   | isDiv && divided > 500 = process num (take 5 (tuple:list))
+   | isDiv = process divided (take 5 (tuple:list))
+   | otherwise = process (num*2) (list)
+     where divided = (num - 1) `quot` 3
+           isDiv = (num - 1) `rem` 3 == 0 
+           tuple = (num, divided)
 
-                      
+
