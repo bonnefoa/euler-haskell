@@ -1,20 +1,20 @@
 module Main
        where
+import Data.List
 
-calcul 0 0 = 0
-calcul 0 _ = 1
-calcul _ 0 = 1
-calcul x y 
-  |x < y = 
-    (calcul (x-1) y) + (calcul x (y-1))
-calcul x y 
-  |x == y = 
-    2*(calcul (x-1) y)
-calcul x y = 0
 
-data GridPoint = GridPoint Int Int Int
-getCostFromGrid :: Int -> Int -> [GridPoint] -> Maybe Int
-getCostFromGrid x y (GridPoint gx gy cost:_)| x==gx && y == gy = Just cost
-getCostFromGrid x y (_:xs) = getCostFromGrid x y xs
-getCostFromGrid _ _ [] = Nothing
+-- calcul cur end grid | cur < end = 
+data  Point x y cost = Point Int Int Int 
+                       deriving(Show)
+
+findCost x y grid =  find (gridPredicate x y) grid
+gridPredicate x y (Point px py _) = x == px && y == py
+getCost Just (Point _ _ cost) = cost
+
+func 0 y grid = (Point 0 y 1) : grid
+func x 0 grid = (Point x 1 1) : grid
+func x y grid = (Point x y (costX + costY)):grid
+  where costX = func (x-1) y grid
+        costY = func x (y-1) grid
+
 
