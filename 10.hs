@@ -1,21 +1,19 @@
 module Euler
        where
-import System.Random
+import Data.List
+import qualified Data.ByteString.Lazy.Char8 as L
+import Data.Word
 
-fermatTest x random = reminderPower == reminderNormal
-  where reminderPower = (random ^ x) `rem` x
-        reminderNormal = random `rem` x
-        
-ioFermat list = do
-  rndList <- mapM genRandom list
-  let lstWithRnd = zip list rndList
-  let res = filter (\a -> fermatTest (fst a) (snd a)) lstWithRnd
-  return (fst $ unzip res)
-
-go list = do 
-     res <- ioFermat list
-     res2 <- ioFermat res
-     return (sum res2)
+readDaFile fileName max= do
+  inpStr <- L.readFile fileName
+  let listNumbers = processFile inpStr
+  let res = takeWhile (< max) listNumbers
+  putStrLn $ show $ bigSum res 0
   
-genRandom max = getStdRandom (randomR(1, max-1))
+bigSum :: [Int] -> Word64 -> Word64
+bigSum [] cur = cur
+bigSum (x:xs) cur = bigSum xs (cur + (fromIntegral x))
+ 
+processFile :: L.ByteString -> [Int]
+processFile = map read . filter (/= "") . filter (/= "\r\r") . concat . map (map L.unpack) . map (L.split ' ') . L.lines
 
