@@ -13,8 +13,15 @@ prop_gridBeginWith1 width = width < 100 ==> all (==1) firstLine
   where (Grid  rows) = buildGrid width (Grid [])
         (Row firstLine) = head rows
 
+prop_gridBeginFollowWithSupRow (Grid (row:_)) = sum newR > sum cur
+  where (Row newR) = getNextRow row 
+        (Row cur) = row
 
 instance Arbitrary Row where
   arbitrary = do xs <- listOf1 $ elements [1..100]
                  return (Row (xs++[1]))
+
+instance Arbitrary Grid where
+  arbitrary = do rows  <- listOf1 $ arbitrary
+                 return (Grid rows)
 
