@@ -22,17 +22,14 @@ getListUnique :: [Int]  -> [Int]
 getListUnique lst = nub . concat $ map separateNum lst
 
 createTuple :: [Int] -> [(Int,Int)]
-createTuple arr = zip fstLst sndLst
-  where fstLst = init arr
-        sndLst = tail arr
-
-
+createTuple (x:[]) = []
+createTuple (x:xs) = zip (replicate (length xs) x) xs ++ createTuple xs
 
 qsort :: [(Int,Int)] -> [Int] -> [Int]
 qsort lstTuple [] = []
 qsort lstTuple (x:xs) = qsort lstTuple lhs ++ [x] ++ qsort lstTuple rhs
-  where lhs = filter (isInferior x) xs
-        rhs = filter (isSuperior x) xs
+  where lhs = filter (isSuperior x) xs
+        rhs = filter (isInferior x) xs
         isInferior x y = any (\(a,b) -> a == x && y == b) lstTuple
         isSuperior x y = not $ isInferior x y
 
