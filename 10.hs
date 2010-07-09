@@ -1,19 +1,5 @@
-module Euler
-       where
-import Data.List
-import qualified Data.ByteString.Lazy.Char8 as L
-import Data.Word
 
-readDaFile fileName max= do
-  inpStr <- L.readFile fileName
-  let listNumbers = processFile inpStr
-  let res = takeWhile (< max) listNumbers
-  putStrLn $ show $ bigSum res 0
-  
-bigSum :: [Int] -> Word64 -> Word64
-bigSum [] cur = cur
-bigSum (x:xs) cur = bigSum xs (cur + (fromIntegral x))
- 
-processFile :: L.ByteString -> [Int]
-processFile = map read . filter (/= "") . filter (/= "\r\r") . concat . map (map L.unpack) . map (L.split ' ') . L.lines
+main = do putStrLn (show $ length (myRand [] [2..2*10^6]))
 
+myRand primes [] = primes
+myRand primes (x:xs) = myRand ([x]++primes) (filter (\a-> a `rem` x /=0) xs)

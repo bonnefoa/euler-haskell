@@ -7,29 +7,21 @@ import Data.List
 readDaFile  fileName = do
   inpStr <- L.readFile fileName
   let listTriples = processFile inpStr
-  let listTuples = concat $ map (createTuple . separateNum) listTriples
-  let listUnique = getListUnique listTriples
-  return $ qsort listTuples listUnique
+  return listTriples
 
-processFile :: L.ByteString -> [Int]
-processFile = map read . map L.unpack . L.lines
+processFile :: L.ByteString -> [String]
+processFile = map L.unpack . L.lines
 
-separateNum :: Int -> [Int]
-separateNum num = numTab num
-  where numTab = map read . groupBy (\_ _ -> False) . show 
+separatePairOfNum :: String -> [(Char,Char)]
+separatePairOfNum explodedNum = zip fstLst sndLst
+  where fstLst = init explodedNum
+        sndLst = tail explodedNum
 
-getListUnique :: [Int]  -> [Int]
-getListUnique lst = nub . concat $ map separateNum lst
+hasTwoSimilarElem str1 str2 = any (`elem` arrTwo) arrOne
+  where arrOne = separatePairOfNum str1
+        arrTwo = separatePairOfNum str2
 
-createTuple :: [Int] -> [(Int,Int)]
-createTuple (x:[]) = []
-createTuple (x:xs) = zip (replicate (length xs) x) xs ++ createTuple xs
-
-qsort :: [(Int,Int)] -> [Int] -> [Int]
-qsort lstTuple [] = []
-qsort lstTuple (x:xs) = qsort lstTuple lhs ++ [x] ++ qsort lstTuple rhs
-  where lhs = filter (isSuperior x) xs
-        rhs = filter (isInferior x) xs
-        isInferior x y = any (\(a,b) -> a == x && y == b) lstTuple
-        isSuperior x y = not $ isInferior x y
-
+splitByElem :: String -> String -> (String,String,String)
+splitByElem strToSplit elem = (fstPart,sndPart, thrPart) 
+ where (fstPart,rest) = break (== head elem) strToSplit
+       (sndPart,thrPart) = splitAt 2 rest 

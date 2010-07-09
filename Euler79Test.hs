@@ -2,15 +2,16 @@ import Euler79
 import Test.QuickCheck
 import Data.List
 
-prop_separateNum num = num >0 ==> (concat . map show . separateNum $ num)  == show num
+prop_separatePairNum str = length str >1   ==> conTuple == str
+  where lstTuple = separatePairOfNum str
+        conTuple = (fst . head $ lstTuple) :  map snd lstTuple  
 
-prop_createTuple lst = length lst > 1 ==>  lst `intersect` lstFromTuple == lst
-  where lstFromTuple = concat $  map (\(a,b) -> [a,b] )  $ createTuple  lst 
+prop_hasTwoSimilarElem str = length str > 1 ==> hasTwoSimilarElem str str
 
-prop_eachNumberShouldAppearTwice lst = length lst > 2 ==> all (\a -> length a >=2) (group . sort $ lstFromTuple) 
-  where lstFromTuple = concat $  map (\(a,b) -> [a,b] )  $ createTuple  lst 
+prop_hasTwoSimilarElemBis str1 str2 = length str1 > 0 && length str2 > 0 ==> hasTwoSimilarElem arr1 arr2
+  where arr1 = str1 ++ "00"
+        arr2 = str2 ++ "00"
 
-
---prop_searchMin pos cur next = min next == snd res
--- where res =  searchOptimizedPath pos [] next
+prop_splitByElem str1 str2 = length str1 > 0 && length str2 > 0
+    ==> (\(a,b,c) -> a++b++c) (splitByElem str1 str2) == str1
 

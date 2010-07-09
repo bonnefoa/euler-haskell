@@ -1,3 +1,7 @@
+module Euler82
+       where 
+
+
 import Data.List
 import qualified Data.ByteString.Lazy.Char8 as L
 
@@ -29,12 +33,13 @@ pivoteMatrix mat | length (head mat) == 1 = [map head mat]
                  | otherwise= (map head mat) : pivoteMatrix (map tail mat)
 
 searchOptimizedPath :: Int -> [Int] -> [Int] -> (Int, Int)
-searchOptimizedPath  pos nextCol curCol = (nextPos,nextCost)
+searchOptimizedPath  pos curCol nextCol = (nextPos,nextCost)
   where costColCur = getPathCostForCol pos curCol
         costColNext = zipWith (+) costColCur nextCol
         nextCost = minimum costColNext
         Just nextPos = nextCost `elemIndex` costColNext
               
+
 getPathCostForCol :: Int -> [Int] -> [Int]              
 getPathCostForCol pos col
   | pos == 0 = scanl1 (+) col
@@ -44,6 +49,6 @@ getPathCostForCol pos col
           g1 = scanr1 (+) l1
           g2 = tail $ scanl1 (+) (last l1:l2)
 
-smallGo = readDaFile "smallMatrice.txt"
 
+smallGo = readDaFile "smallMatrice.txt"
 go = readDaFile "matrix.txt"
